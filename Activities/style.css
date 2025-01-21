@@ -1,0 +1,20 @@
+body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: #c2730c;
+}
+
+#recipe1{
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+#recipe2{
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+#recipe3{
+    grid-column-start: 3;
+    grid-column-end: 4;
+}
