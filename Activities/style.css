@@ -18,3 +18,13 @@ body {
     height: 200px;
     width: 200px;
 }
+
+.input-container{
+    text-align: center;
+    grid-column-start: 2;
+}
+
+#recipeList{
+    text-align: center;
+    grid-column-start: 2;
+}
