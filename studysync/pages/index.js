@@ -16,13 +16,20 @@ const PageWrapper = styled.div`
 
 const SignInDiv = styled.div`
   width: 584px;
-  height: 594px;
+  height: 500px;
   background: #d9d9d9;
   border-radius: 45px;
-  display: grid;
-  place-items: center; /* Centers the content inside */
+  //display: grid;
+  //place-items: center; /* Centers the content inside */
   text-align: center;
 `;
+
+const Inputs = styled.input`
+  height: 44px;
+  padding: 11px 12px 13px;
+  font-size: 18px;
+  line-height: 1.3333;
+`
 
 export default function Home() {
   return (
@@ -37,9 +44,8 @@ export default function Home() {
       <main>
       <PoppinsHead>Welcome to StudySync</PoppinsHead>
         <SignInDiv>
-          <p style={{ textAlign: "center" }}>
-            This is a clean starting point for your project.
-          </p>
+          <p>First, enter your Penn State email</p>
+          <Inputs placeholder="abc1234@psu.edu"/>
         </SignInDiv>
       </main>
       </PageWrapper>
