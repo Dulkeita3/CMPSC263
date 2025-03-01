@@ -25,7 +25,9 @@ const SignInDiv = styled.div`
   text-align: center;
 `;
 
-const Inputs = styled.input`
+const Inputs = styled.input.attrs((props) => ({
+  maxLength: props.maxLength || 15, //using the maxLength property so there aren't long inputs being accepeted
+}))`
   height: 44px;
   padding: 11px 12px 13px;
   font-size: 18px;
@@ -39,6 +41,7 @@ const ErrorMessage = styled.p`
 export default function Home() {
   const [state, setState] = useState("Initial");
   const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
   const [error, setError] = useState("");
   const psuEmailRegex = /^[a-z]{3}[0-9]{4}@psu\.edu$/;
 
@@ -74,6 +77,28 @@ export default function Home() {
       continueSignUp();
     }
   };
+  const handleBack = () => {
+    setNumber("");
+    setError("");
+    setState("Initial");
+  };
+  const handlePhoneNumber = (e) => {
+    let inputValue = e.target.value.replace(/\D/g, ""); //only allows numbers to be inputted
+    // if we're between 4 and 6 characters we'll add a - between the first 3 digits and the fourth
+    if (inputValue.length > 3 && inputValue.length <= 6) {
+      inputValue = inputValue.slice(0, 3) + "-" + inputValue.slice(3);
+    }
+    //put a hypen between the 6th and 7th digit
+    else if (inputValue.length > 6) {
+      inputValue =
+        inputValue.slice(0, 3) +
+        "-" +
+        inputValue.slice(3, 6) +
+        "-" +
+        inputValue.slice(6);
+    }
+    setNumber(inputValue);
+  };
   return (
     //start
     <>
@@ -93,6 +118,7 @@ export default function Home() {
                 <p>First, enter your Penn State email</p>
                 <Inputs
                   placeholder="abc1234@psu.edu"
+                  value={email}
                   onChange={inputResponse}
                   onKeyDown={handleEnter}
                 />
@@ -117,12 +143,39 @@ export default function Home() {
                     studying!
                   </p>
                   <Inputs
-                    placeholder="abc1234@psu.edu"
-                    onChange={inputResponse}
-                    onKeyDown={handleEnter}
+                    //first name
+                    maxLength={10}
+                    placeholder="first name"
+                    //onChange={inputResponse}
+                    //onKeyDown={handleEnter}
                   />
+                  <Inputs
+                    //last name
+                    maxLength={10}
+                    placeholder="last name"
+                    //onChange={inputResponse}
+                    //onKeyDown={handleEnter}
+                  />
+                  <Inputs
+                    //phone number
+                    maxLength={12}
+                    placeholder="000-000-0000"
+                    value={number}
+                    onChange={handlePhoneNumber}
+                    //onChange={inputResponse}
+                    //onKeyDown={handleEnter}
+                  />
+                  <Inputs
+                    //this one should already have the email
+
+                    placeholder="first name"
+                    //onChange={inputResponse}
+                    //onKeyDown={handleEnter}
+                  />
+                  {/*should be able to reuse this for different states */}
                   {error && <ErrorMessage>{error}</ErrorMessage>}
-                  <button onClick={continueSignUp}>Continue</button>
+                  <button>Sign Up</button>
+                  <button onClick={handleBack}>Back</button>
                   <h1>OR</h1>
                   <button>Log In</button>
                 </SignInDiv>
