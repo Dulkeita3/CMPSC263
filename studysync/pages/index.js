@@ -1,6 +1,8 @@
 import Head from "next/head";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const PoppinsHead = styled.h1`
   font-family: var(--font-poppins), sans-serif;
@@ -39,9 +41,12 @@ const ErrorMessage = styled.p`
   font-size: 14px;
 `;
 export default function Home() {
+  const router = useRouter();
   const [state, setState] = useState("Initial");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
   const psuEmailRegex = /^[a-z]{3}[0-9]{4}@psu\.edu$/;
 
@@ -99,6 +104,19 @@ export default function Home() {
     }
     setNumber(inputValue);
   };
+
+  const handleSignUp = () => {
+    if (
+      firstName.trim() === "" ||
+      lastName.trim() === "" ||
+      number.length < 12
+    ) {
+      setError("Please Properly fill out the fields above");
+      return;
+    }
+    setError("");
+    router.push("/mainpage");
+  };
   return (
     //start
     <>
@@ -146,6 +164,8 @@ export default function Home() {
                     //first name
                     maxLength={10}
                     placeholder="first name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     //onChange={inputResponse}
                     //onKeyDown={handleEnter}
                   />
@@ -153,6 +173,8 @@ export default function Home() {
                     //last name
                     maxLength={10}
                     placeholder="last name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     //onChange={inputResponse}
                     //onKeyDown={handleEnter}
                   />
@@ -168,13 +190,14 @@ export default function Home() {
                   <Inputs
                     //this one should already have the email
 
-                    placeholder="first name"
+                    value={email}
+                    disabled
                     //onChange={inputResponse}
                     //onKeyDown={handleEnter}
                   />
                   {/*should be able to reuse this for different states */}
                   {error && <ErrorMessage>{error}</ErrorMessage>}
-                  <button>Sign Up</button>
+                  <button onClick={handleSignUp}>Sign Up</button>
                   <button onClick={handleBack}>Back</button>
                   <h1>OR</h1>
                   <button>Log In</button>
