@@ -3,6 +3,20 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { auth, db } from "../lib/firebase";
+import {
+  doc,
+  setDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 
 const PoppinsHead = styled.h1`
   font-family: var(--font-poppins), sans-serif;
@@ -37,7 +51,7 @@ const Inputs = styled.input.attrs((props) => ({
 `;
 
 const ErrorMessage = styled.p`
-  color: red;
+  color: ${(props) => props.color || "red"};
   font-size: 14px;
 `;
 export default function Home() {
@@ -47,8 +61,12 @@ export default function Home() {
   const [number, setNumber] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const psuEmailRegex = /^[a-z]{3}[0-9]{4}@psu\.edu$/;
+  // password has to start with a capital letter, contain a number, special character, and be 6 or more characters
+  const goodPasswordRegex = /^[A-Z].{5,}(?=.*\d)(?=.*[@$!%*?&])/;
 
   //keeps track of the input being passed through out main input box, if it's empty it doesn't display any error messages
   const inputResponse = (e) => {
@@ -84,6 +102,9 @@ export default function Home() {
   };
   const handleBack = () => {
     setNumber("");
+    setFirstName("");
+    setLastName("");
+    setPassword("");
     setError("");
     setState("Initial");
   };
@@ -105,7 +126,7 @@ export default function Home() {
     setNumber(inputValue);
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (
       firstName.trim() === "" ||
       lastName.trim() === "" ||
@@ -113,9 +134,83 @@ export default function Home() {
     ) {
       setError("Please Properly fill out the fields above");
       return;
+    } else if (!goodPasswordRegex.test(password)) {
+      setError("Please set a proper passoword using the guidelines below");
+      return;
+    } else {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          firstName,
+          lastName,
+          email: user.email,
+          phone: number,
+          createdAt: new Date(),
+        });
+
+        console.log("User signed up:", user);
+        setError("");
+        router.push("/landingPage");
+      } catch (error) {
+        if (error.code === "auth/email-already-in-use") {
+          setError("This email is already in use. Please log in instead.");
+        } else {
+          console.error("Error signing up:", error.message);
+          setError(error.message);
+        }
+      }
     }
+  };
+
+  const handleLogIn = async () => {
     setError("");
-    router.push("/mainpage");
+    setSuccessMessage("");
+
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter both email and password.");
+      return;
+    }
+
+    try {
+      // Authenticate User
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      console.log("User logged in:", user);
+
+      //Redirect after successful login
+      router.push("/landingPage");
+    } catch (error) {
+      console.error("Error logging in:", error.message);
+      setError(
+        "Invalid Information, please check your email and password and try again"
+      );
+    }
+  };
+
+  const handlePasswordReset = async (email) => {
+    if (!email.trim()) {
+      setError("Please enter your email to reset your password.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setSuccessMessage("A password reset email has been sent to your inbox.");
+      setError("");
+    } catch (error) {
+      console.error("Error sending reset email:", error.message);
+      setError(error.message);
+    }
   };
   return (
     //start
@@ -143,7 +238,14 @@ export default function Home() {
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 <button onClick={continueSignUp}>Continue</button>
                 <h1>OR</h1>
-                <button>Log In</button>
+                <button
+                  onClick={() => {
+                    setState("LogIn");
+                    setEmail("");
+                  }}
+                >
+                  Log In
+                </button>
               </SignInDiv>
             </main>
           </PageWrapper>
@@ -189,22 +291,58 @@ export default function Home() {
                   />
                   <Inputs
                     //this one should already have the email
-
-                    value={email}
-                    disabled
-                    //onChange={inputResponse}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     //onKeyDown={handleEnter}
                   />
-                  {/*should be able to reuse this for different states */}
                   {error && <ErrorMessage>{error}</ErrorMessage>}
+                  <p>
+                    Passowrd should start with a capital letter, contain at
+                    least 1 number, 1 special character, and be at least 6
+                    characters
+                  </p>
+                  {/*should be able to reuse this for different states */}
                   <button onClick={handleSignUp}>Sign Up</button>
                   <button onClick={handleBack}>Back</button>
-                  <h1>OR</h1>
-                  <button>Log In</button>
+                  //<h1>OR</h1>
+                  //<button>Log In</button>
                 </SignInDiv>
               </main>
             </PageWrapper>
           </>
+        </>
+      )}
+      {state === "LogIn" && (
+        <>
+          <PageWrapper>
+            <main>
+              <PoppinsHead>Welcome to StudySync</PoppinsHead>
+              <SignInDiv>
+                <p>Enter your Penn State email and StudySync password below</p>
+                <Inputs
+                  placeholder="abc123@psu.edu"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  //onKeyDown={handleEnter}
+                />
+                <Inputs
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  //onKeyDown={handleEnter}
+                />
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+                {successMessage && (
+                  <ErrorMessage color="green">{successMessage}</ErrorMessage>
+                )}
+                <button onClick={handleLogIn}>Log In</button>
+                <p>Forgot your password?</p>
+                <button onClick={() => handlePasswordReset(email)}>
+                  Reset Password
+                </button>
+              </SignInDiv>
+            </main>
+          </PageWrapper>
         </>
       )}
     </> //end
