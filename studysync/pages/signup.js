@@ -1,22 +1,15 @@
 import Head from "next/head";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { auth, db } from "../lib/firebase";
-import {
-  doc,
-  setDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
+import NavBar from "../components/NavBar";
 
 const PoppinsHead = styled.h1`
   font-family: var(--font-poppins), sans-serif;
@@ -25,36 +18,75 @@ const PoppinsHead = styled.h1`
 `;
 
 const PageWrapper = styled.div`
-  display: grid;
-  place-items: center; /* Centers the content */
-  height: 100vh; /* Full viewport height */
-  background: #f4f4f4;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(12, 1fr);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb
+  ); /* Gradient background */
+  font-family: var(--font-poppins), sans-serif;
 `;
 
 const SignInDiv = styled.div`
-  width: 584px;
-  height: 500px;
-  background: #d9d9d9;
-  border-radius: 45px;
-  //display: grid;
-  //place-items: center; /* Centers the content inside */
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+  width: 420px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
 `;
 
 const Inputs = styled.input.attrs((props) => ({
   maxLength: props.maxLength || 15, //using the maxLength property so there aren't long inputs being accepeted
 }))`
-  height: 44px;
-  padding: 11px 12px 13px;
-  font-size: 18px;
-  line-height: 1.3333;
-`;
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border 0.3s ease-in-out;
 
+  &:focus {
+    border: 2px solid #3b82f6; /* Highlight effect */
+    outline: none;
+  }
+`;
+const Button = styled.button`
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: ${(props) =>
+    props.backgroundColor ||
+    "linear-gradient(135deg, #3b82f6, #2563eb)"}; //linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  }
+`;
 const ErrorMessage = styled.p`
   color: ${(props) => props.color || "red"};
-  font-size: 14px;
+  font-size: 18px;
+  font-weight: bold;
 `;
 export default function Home() {
   const router = useRouter();
@@ -224,13 +256,17 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       {/*The initial state is the state we load into, from here we can eithe go to signing the user up or logging in with prior credentials*/}
       {state === "Initial" && (
         <>
           <PageWrapper>
+            <NavBar />
             <main>
-              <PoppinsHead>Welcome to StudySync</PoppinsHead>
               <SignInDiv>
+                <PoppinsHead style={{ fontSize: "30px" }}>
+                  Welcome to StudySync
+                </PoppinsHead>
                 <p>First, enter your Penn State email</p>
                 <Inputs
                   placeholder="abc1234@psu.edu"
@@ -239,16 +275,16 @@ export default function Home() {
                   onKeyDown={handleEnter}
                 />
                 {error && <ErrorMessage>{error}</ErrorMessage>}
-                <button onClick={continueSignUp}>Continue</button>
+                <Button onClick={continueSignUp}>Continue</Button>
                 <h1>OR</h1>
-                <button
+                <Button
                   onClick={() => {
                     setState("LogIn");
                     setEmail("");
                   }}
                 >
                   Log In
-                </button>
+                </Button>
               </SignInDiv>
             </main>
           </PageWrapper>
@@ -258,9 +294,12 @@ export default function Home() {
         <>
           <>
             <PageWrapper>
+              <NavBar />
               <main>
-                <PoppinsHead>Finish Signing up StudySync</PoppinsHead>
                 <SignInDiv>
+                  <PoppinsHead style={{ fontSize: "30px" }}>
+                    Finish Signing up StudySync
+                  </PoppinsHead>
                   <p>
                     Enter the basic information below to revolutionize your
                     studying!
@@ -293,7 +332,7 @@ export default function Home() {
                     //onKeyDown={handleEnter}
                   />
                   <Inputs
-                    //this one should already have the email
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     //onKeyDown={handleEnter}
@@ -305,10 +344,12 @@ export default function Home() {
                     characters
                   </p>
                   {/*should be able to reuse this for different states */}
-                  <button onClick={handleSignUp}>Sign Up</button>
-                  <button onClick={handleBack}>Back</button>
-                  //<h1>OR</h1>
-                  <button
+                  <Button onClick={handleSignUp}>Sign Up</Button>
+                  <Button backgroundColor="gray" onClick={handleBack}>
+                    Back
+                  </Button>
+                  <h1>OR</h1>
+                  <Button
                     onClick={() => {
                       setError("");
                       setEmail("");
@@ -317,7 +358,7 @@ export default function Home() {
                     }}
                   >
                     Log In
-                  </button>
+                  </Button>
                 </SignInDiv>
               </main>
             </PageWrapper>
@@ -327,9 +368,12 @@ export default function Home() {
       {state === "LogIn" && (
         <>
           <PageWrapper>
+            <NavBar />
             <main>
-              <PoppinsHead>Welcome to StudySync</PoppinsHead>
               <SignInDiv>
+                <PoppinsHead style={{ fontSize: "30px" }}>
+                  Welcome to StudySync
+                </PoppinsHead>
                 <p>Enter your Penn State email and StudySync password below</p>
                 <Inputs
                   placeholder="abc123@psu.edu"
@@ -347,12 +391,18 @@ export default function Home() {
                 {successMessage && (
                   <ErrorMessage color="green">{successMessage}</ErrorMessage>
                 )}
-                <button onClick={handleLogIn}>Log In</button>
-                <button onClick={handleBack}>Back</button>
-                <p>Forgot your password?</p>
-                <button onClick={() => handlePasswordReset(email)}>
+                <Button onClick={handleLogIn}>Log In</Button>
+                <Button backgroundColor="gray" onClick={handleBack}>
+                  Back
+                </Button>
+
+                <p style={{ fontWeight: "bold" }}>Forgot your password?</p>
+                <Button
+                  backgroundColor="#07004D"
+                  onClick={() => handlePasswordReset(email)}
+                >
                   Reset Password
-                </button>
+                </Button>
               </SignInDiv>
             </main>
           </PageWrapper>

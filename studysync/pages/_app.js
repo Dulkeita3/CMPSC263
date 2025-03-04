@@ -1,5 +1,5 @@
 import { Poppins } from "next/font/google";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, StyleSheetManager } from "styled-components";
 
 const poppins = Poppins({
   weight: ["400", "700"], // Normal (400) & Bold (700)
@@ -17,10 +17,10 @@ const GlobalStyle = createGlobalStyle`
 
 export default function App({ Component, pageProps }) {
   return (
-    <div>
-      <GlobalStyle />
-      <Component {...pageProps} />
-    </div>
+    <StyleSheetManager><div>
+    <GlobalStyle />
+    <Component {...pageProps} />
+  </div></StyleSheetManager>
   );
 }
 
