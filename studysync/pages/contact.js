@@ -4,12 +4,12 @@ export default function Contact() {
   return (
     <>
       <Head>
-        <title>About</title>
+        <title>Contact</title>
       </Head>
       <main style={{ display: 'grid', placeItems: 'center', height: '100vh', textAlign: 'center' }}>
         <div>
-          <h1>About Page</h1>
-          <p>Welcome to the About page. More content coming soon!</p>
+          <h1>Contact Page</h1>
+          <p>Contact us at example@email.com.</p>
         </div>
       </main>
     </>
