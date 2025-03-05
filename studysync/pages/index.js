@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Image from "next/image";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/HomeNavBar";
 
 const Container = styled.div`
   display: grid;

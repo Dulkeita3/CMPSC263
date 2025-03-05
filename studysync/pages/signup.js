@@ -9,7 +9,7 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/HomeNavBar";
 
 const PoppinsHead = styled.h1`
   font-family: var(--font-poppins), sans-serif;
@@ -129,9 +129,9 @@ export default function Home() {
     }
   };
   // if we hit enter in the input box it takes us to the continueSignUp event handler
-  const handleEnter = (e) => {
-    if (e.key === "Enter") {
-      continueSignUp();
+  const handleEnter = (e, action) => {
+    if (e.key === "Enter" && typeof action === "function") {
+      action();
     }
   };
   const handleBack = () => {
@@ -272,7 +272,7 @@ export default function Home() {
                   placeholder="abc1234@psu.edu"
                   value={email}
                   onChange={inputResponse}
-                  onKeyDown={handleEnter}
+                  onKeyDown={(e) => handleEnter(e, continueSignUp)}
                 />
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 <Button onClick={continueSignUp}>Continue</Button>
@@ -335,7 +335,7 @@ export default function Home() {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    //onKeyDown={handleEnter}
+                    onKeyDown={(e) => handleEnter(e, handleSignUp)}
                   />
                   {error && <ErrorMessage>{error}</ErrorMessage>}
                   <p>
@@ -385,7 +385,7 @@ export default function Home() {
                   placeholder="Enter Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  //onKeyDown={handleEnter}
+                  onKeyDown={(e) => handleEnter(e, handleLogIn)}
                 />
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 {successMessage && (
