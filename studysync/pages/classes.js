@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import NavBar from "../components/DashNavBar";
 import { auth, db } from "../lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -70,6 +71,9 @@ const classOptions = [
   { name: "MATH 319", credits: 3 },
   { name: "Music 11Z", credits: 2 },
   { name: "AFAM 101", credits: 1 },
+  { name: "MATH 141", credits: 3 },
+  { name: "MATH 142", credits: 3 },
+  { name: "PHYSICS 211", credits: 4 },
 ];
 
 export default function EditClasses() {
@@ -78,11 +82,16 @@ export default function EditClasses() {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         router.push("/login"); // Redirect to login if not authenticated
       } else {
         setUserId(user.uid);
+        // Fetch user classes from Firestore
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          setSelectedClasses(userDoc.data().classes || []);
+        }
       }
     });
 
@@ -106,7 +115,16 @@ export default function EditClasses() {
       return;
     }
 
-    await setDoc(doc(db, "users", userId), { classes: selectedClasses });
+    try {
+      await setDoc(
+        doc(db, "users", userId),
+        { classes: selectedClasses },
+        { merge: true }
+      );
+      console.log("Classes saved successfully");
+    } catch (error) {
+      console.error("Error saving classes: ", error);
+    }
   };
 
   return (
@@ -119,7 +137,8 @@ export default function EditClasses() {
         <ClassesContainer>
           <h2>Edit Your Classes</h2>
           <p>
-            Total Credits: {selectedClasses.reduce((acc, cls) => acc + cls.credits, 0)}/19
+            Total Credits:{" "}
+            {selectedClasses.reduce((acc, cls) => acc + cls.credits, 0)}/19
           </p>
           <Button onClick={saveClasses} disabled={selectedClasses.length === 0}>
             Save Classes
@@ -139,7 +158,8 @@ export default function EditClasses() {
               onClick={() => addClass(cls)}
               disabled={
                 selectedClasses.some((c) => c.name === cls.name) ||
-                selectedClasses.reduce((acc, c) => acc + c.credits, 0) + cls.credits >
+                selectedClasses.reduce((acc, c) => acc + c.credits, 0) +
+                  cls.credits >
                   19
               }
             >

@@ -48,7 +48,7 @@ export default function NavBar() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.push("/signin"); // Redirect to login page after logout
+      router.push("/signup"); // Redirect to login page after logout
     } catch (error) {
       console.error("Error logging out:", error.message);
       return;
@@ -73,7 +73,7 @@ export default function NavBar() {
           <NavLink href="/profile">Profile</NavLink>
         </NavItem>
         <Button onClick={handleLogout}>
-          <NavLink href="/">Log Out</NavLink>
+          <NavLink>Log Out</NavLink>
         </Button>
       </ul>
     </Nav>

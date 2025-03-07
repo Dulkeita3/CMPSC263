@@ -182,10 +182,12 @@ export default function Home() {
         const user = userCredential.user;
 
         await setDoc(doc(db, "users", user.uid), {
-          firstName,
-          lastName,
+          personalInfo: {
+            firstName,
+            lastName,
+            phone: number,
+          },
           email: user.email,
-          phone: number,
           createdAt: new Date(),
         });
 
