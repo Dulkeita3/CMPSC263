@@ -84,7 +84,7 @@ export default function EditClasses() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        router.push("/login"); // Redirect to login if not authenticated
+        router.push("/signup"); // Redirect to login if not authenticated
       } else {
         setUserId(user.uid);
         // Fetch user classes from Firestore

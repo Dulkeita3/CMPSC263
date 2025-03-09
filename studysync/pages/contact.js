@@ -1,17 +1,119 @@
-import Head from 'next/head';
+import Head from "next/head";
+import styled from "styled-components";
+import { useState } from "react";
+import NavBar from "../components/HomeNavBar";
+
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: #f4f4f4;
+  font-family: var(--font-poppins), sans-serif;
+  padding-top: 60px;
+`;
+
+const ContactContainer = styled.div`
+  width: 80%;
+  max-width: 600px;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-top: 40px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  resize: vertical;
+`;
+
+const Button = styled.button`
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    transform: scale(1.05);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  }
+`;
 
 export default function Contact() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // to check validation before submitting
+    const recipient = "akk6047@psu.edu";
+    const subject = encodeURIComponent(
+      `New Contact Message from ${firstName} ${lastName}`
+    );
+    const body = encodeURIComponent(message);
+
+    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+  };
+
   return (
     <>
       <Head>
         <title>Contact</title>
       </Head>
-      <main style={{ display: 'grid', placeItems: 'center', height: '100vh', textAlign: 'center' }}>
-        <div>
-          <h1>Contact Page</h1>
-          <p>Contact us at example@email.com.</p>
-        </div>
-      </main>
+      <PageWrapper>
+        <NavBar />
+        <ContactContainer>
+          <h2>Contact Us</h2>
+          <form onSubmit={handleSubmit}>
+            <Input
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+            <Input
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+            <TextArea
+              rows="5"
+              placeholder="Your message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+            />
+            <Button type="submit">Send Message</Button>
+          </form>
+        </ContactContainer>
+      </PageWrapper>
     </>
   );
 }
