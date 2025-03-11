@@ -98,33 +98,33 @@ export default function EditClasses() {
     return () => unsubscribe();
   }, [router]);
 
+  const updateClassesInFirestore = async (updatedClasses) => {
+    if (!userId) return;
+    try {
+      await setDoc(
+        doc(db, "users", userId),
+        { classes: updatedClasses },
+        { merge: true }
+      );
+      console.log("Classes updated automatically.");
+    } catch (error) {
+      console.error("Error updating classes: ", error);
+    }
+  };
+
   const addClass = (cls) => {
     const totalCredits = selectedClasses.reduce((acc, c) => acc + c.credits, 0);
     if (totalCredits + cls.credits <= 19) {
-      setSelectedClasses([...selectedClasses, cls]);
+      const updatedClasses = [...selectedClasses, cls];
+      setSelectedClasses(updatedClasses);
+      updateClassesInFirestore(updatedClasses);
     }
   };
 
   const removeClass = (cls) => {
-    setSelectedClasses(selectedClasses.filter((c) => c.name !== cls.name));
-  };
-
-  const saveClasses = async () => {
-    if (!userId) {
-      console.error("No user logged in");
-      return;
-    }
-
-    try {
-      await setDoc(
-        doc(db, "users", userId),
-        { classes: selectedClasses },
-        { merge: true }
-      );
-      console.log("Classes saved successfully");
-    } catch (error) {
-      console.error("Error saving classes: ", error);
-    }
+    const updatedClasses = selectedClasses.filter((c) => c.name !== cls.name);
+    setSelectedClasses(updatedClasses);
+    updateClassesInFirestore(updatedClasses);
   };
 
   return (
@@ -132,17 +132,15 @@ export default function EditClasses() {
       <Head>
         <title>StudySync - Edit Classes</title>
       </Head>
-      <NavBar />
+
       <PageWrapper>
+        <NavBar />
         <ClassesContainer>
           <h2>Edit Your Classes</h2>
           <p>
             Total Credits:{" "}
             {selectedClasses.reduce((acc, cls) => acc + cls.credits, 0)}/19
           </p>
-          <Button onClick={saveClasses} disabled={selectedClasses.length === 0}>
-            Save Classes
-          </Button>
           <ClassList>
             {selectedClasses.map((cls) => (
               <ClassItem key={cls.name}>

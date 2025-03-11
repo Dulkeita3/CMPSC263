@@ -64,7 +64,10 @@ export default function NavBar() {
         }}
       >
         <NavItem>
-          <NavLink href="/landingPage">Dashboard</NavLink>
+          <NavLink href="/landingPage">Available Sessions</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/yourSessions">Make a Session</NavLink>
         </NavItem>
         <NavItem>
           <NavLink href="/classes">Edit Classes</NavLink>

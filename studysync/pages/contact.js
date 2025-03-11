@@ -63,20 +63,29 @@ const Button = styled.button`
   }
 `;
 
+const SuccessMessage = styled.p`
+  color: green;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 10px;
+`;
+
 export default function Contact() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [message, setMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // to check validation before submitting
-    const recipient = "akk6047@psu.edu";
-    const subject = encodeURIComponent(
-      `New Contact Message from ${firstName} ${lastName}`
-    );
-    const body = encodeURIComponent(message);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFirstName("");
+    setLastName("");
+    setMessage("");
+    setShowSuccess(true);
 
-    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 5000); // Message disappears after 5 seconds
   };
 
   return (
@@ -112,6 +121,11 @@ export default function Contact() {
             />
             <Button type="submit">Send Message</Button>
           </form>
+          {showSuccess && (
+            <SuccessMessage>
+              We've received your message and will respond soon.
+            </SuccessMessage>
+          )}
         </ContactContainer>
       </PageWrapper>
     </>
