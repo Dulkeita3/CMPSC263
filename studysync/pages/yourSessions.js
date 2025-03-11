@@ -101,16 +101,18 @@ export default function Dashboard() {
   const [selectedClass, setSelectedClass] = useState("");
   const [location, setLocation] = useState("");
   const [time, setTime] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   const router = useRouter();
 
-  //Fetch user info and enrolled classes
+  // Fetch user info and enrolled classes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) {
         router.push("/signup");
       } else {
         setUserId(user.uid);
+        setUserEmail(user.email); // Set the user's email
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
@@ -124,6 +126,36 @@ export default function Dashboard() {
 
     return () => unsubscribe();
   }, [router]);
+
+  // Send email using Resend API
+  const sendEmail = async (email, sessionDetails) => {
+    try {
+      const response = await fetch("/api/sendEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: "email",
+          subject: "Study Session Created Successfully!",
+          html: `<p>Your study session has been created with the following details:</p>
+                 <ul>
+                   <li><strong>Class:</strong> ${sessionDetails.class}</li>
+                   <li><strong>Location:</strong> ${sessionDetails.location}</li>
+                   <li><strong>Time:</strong> ${sessionDetails.time}</li>
+                 </ul>
+                 <p>Thank you for using StudySync!</p>`,
+        }),
+      });
+
+      const result = await response.json();
+      if (!result.success) {
+        console.error("Failed to send email:", result.error);
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
 
   // Create a new study session
   const createStudySession = async () => {
@@ -142,10 +174,10 @@ export default function Dashboard() {
     };
 
     try {
-      //  Add study session to `studySessions` collection
+      // Add study session to `studySessions` collection
       await setDoc(doc(db, "studySessions", sessionId), newSession);
 
-      //  Merge study session into `users` collection
+      // Merge study session into `users` collection
       await updateDoc(doc(db, "users", userId), {
         [`studySessions.${sessionId}`]: {
           attendance: 1,
@@ -155,6 +187,9 @@ export default function Dashboard() {
           time,
         },
       });
+
+      // Send email confirmation
+      await sendEmail(userEmail, newSession);
 
       alert("Study session created successfully!");
       setShowForm(false);
@@ -176,7 +211,7 @@ export default function Dashboard() {
             <Message>Please select your classes before beginning.</Message>
           ) : (
             <>
-              <Message>Mkae a study session!:</Message>
+              <Message>Make a study session!:</Message>
               <Button
                 disabled={enrolledClasses.length === 0}
                 onClick={() => setShowForm(true)}
