@@ -51,6 +51,7 @@ const FeatureText = styled.h3`
   color: #1f2937;
   margin-top: 8px;
 `;
+
 const ContentGrid = styled.div`
   display: flex;
   flex-direction: column;
@@ -113,34 +114,34 @@ export default function Home() {
           <ImageWrapper>
             <Image
               src="/studysync_images/img3.jpg"
-              alt="Feature 1"
+              alt="Easy Study Session Creation"
               width={150}
               height={150}
             />
           </ImageWrapper>
-          <FeatureText>Feature 1</FeatureText>
+          <FeatureText>Effortless Study Session Creation</FeatureText>
         </FeatureCard>
         <FeatureCard>
           <ImageWrapper>
             <Image
               src="/studysync_images/img4.jpg"
-              alt="Feature 2"
+              alt="Seamless Group Coordination"
               width={150}
               height={150}
             />
           </ImageWrapper>
-          <FeatureText>Feature 2</FeatureText>
+          <FeatureText>Seamless Group Coordination</FeatureText>
         </FeatureCard>
         <FeatureCard>
           <ImageWrapper>
             <Image
               src="/studysync_images/img1.jpg"
-              alt="Feature 3"
+              alt="Automated Notifications"
               width={150}
               height={150}
             />
           </ImageWrapper>
-          <FeatureText>Feature 3</FeatureText>
+          <FeatureText>Automated Email & Calendar Notifications</FeatureText>
         </FeatureCard>
       </FeatureGrid>
 
@@ -156,33 +157,35 @@ export default function Home() {
           <ImageWrapper>
             <Image
               src="/studysync_images/img1.jpg"
-              alt="Description"
+              alt="Organize Your Study Groups"
               width={500}
               height={300}
               priority
             />
           </ImageWrapper>
           <SectionText>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris. Duis
-            aute irure dolor in reprehenderit in voluptate velit esse cillum
-            dolore.
+            <strong style={{ color: "blue" }}>
+              Organize and track your study sessions with ease!
+            </strong>{" "}
+            StudySync allows you to set up, manage, and join study groups
+            effortlessly, making sure you stay on top of your coursework with
+            the right peers.
           </SectionText>
         </div>
 
         <Section>
           <SectionText>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris. Duis
-            aute irure dolor in reprehenderit in voluptate velit esse cillum
-            dolore.
+            <strong style={{ color: "blue" }}>
+              Never miss a session again!
+            </strong>{" "}
+            With automated email reminders and calendar integrations, you will
+            always be notified about your upcoming study sessions. Stay ahead of
+            your schedule with StudySync!
           </SectionText>
           <ImageWrapper>
             <Image
               src="/studysync_images/img2.jpg"
-              alt="Description"
+              alt="Stay on Track with Notifications"
               width={500}
               height={300}
               priority

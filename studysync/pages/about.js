@@ -39,16 +39,17 @@ const Section = styled.div`
 
 const SectionTitle = styled.h3`
   font-size: 22px;
-  font-weight: bold;
-  color: #1f2937;
+  font-weight: 700;
+  color: #111827;
   margin-bottom: 10px;
 `;
 
 const Text = styled.p`
   font-size: 18px;
-  color: #374151;
   line-height: 1.6;
   margin-top: 10px;
+  font-weight: 600;
+  color: rgb(37, 41, 50);
 `;
 
 const List = styled.ul`
@@ -59,7 +60,8 @@ const List = styled.ul`
 
 const ListItem = styled.li`
   font-size: 18px;
-  color: #374151;
+  font-weight: 600;
+  color: rgb(37, 41, 50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +87,7 @@ export default function About() {
           <h2>About StudySync</h2>
           <AboutImage>
             <Image
-              src="/studysync_images/img3.jpg"
+              src="/studysync_images/img5.jpg"
               alt="About StudySync"
               width={600}
               height={300}
@@ -93,8 +95,11 @@ export default function About() {
             />
           </AboutImage>
           <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            StudySync is an innovative platform designed for Penn State students
+            to streamline the process of forming and managing study groups. By
+            providing an intuitive way to schedule sessions, communicate with
+            classmates, and collaborate effectively, StudySync ensures that
+            students make the most out of their academic experience.
           </Text>
 
           {/* Mission Section */}
@@ -114,7 +119,9 @@ export default function About() {
             <List>
               <ListItem>Effortless study session scheduling</ListItem>
               <ListItem>Real-time collaboration with peers</ListItem>
-              <ListItem>Customizable study groups based on enrolled classes</ListItem>
+              <ListItem>
+                Customizable study groups based on enrolled classes
+              </ListItem>
               <ListItem>Secure and user-friendly interface</ListItem>
             </List>
           </Section>
@@ -124,9 +131,15 @@ export default function About() {
             <SectionTitle>How It Works</SectionTitle>
             <List>
               <ListItem>Sign up and enroll in your classes</ListItem>
-              <ListItem>Connect with classmates taking the same courses</ListItem>
-              <ListItem>Create and join study sessions tailored to your schedule</ListItem>
-              <ListItem>Enhance your learning experience through collaboration</ListItem>
+              <ListItem>
+                Connect with classmates taking the same courses
+              </ListItem>
+              <ListItem>
+                Create and join study sessions tailored to your schedule
+              </ListItem>
+              <ListItem>
+                Enhance your learning experience through collaboration
+              </ListItem>
             </List>
           </Section>
 
@@ -135,7 +148,10 @@ export default function About() {
             <SectionTitle>Get in Touch</SectionTitle>
             <Text>
               Have any questions or suggestions? Reach out to us on our{" "}
-              <a href="/contact" style={{ color: "#3b82f6", fontWeight: "bold" }}>
+              <a
+                href="/contact"
+                style={{ color: "#3b82f6", fontWeight: "bold" }}
+              >
                 Contact Page
               </a>
               !
