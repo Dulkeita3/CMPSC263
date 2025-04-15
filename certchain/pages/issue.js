@@ -5,8 +5,8 @@ export default function Home() {
     <>
       <Navbar />
       <main className="p-6">
-        <h1 className="text-3xl font-bold text-blue-600">Welcome</h1>
-        <p>This content is padded nicely!</p>
+        <h1>Verifiable Certificates. Decentralized. Secure.</h1>
+        <p>Issue and verify credentials with blockchain-backed trust.</p>
       </main>
     </>
   );
