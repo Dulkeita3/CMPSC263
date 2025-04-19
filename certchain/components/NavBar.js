@@ -33,7 +33,7 @@ export default function Navbar() {
               Verify
             </Link>
             <Link
-              href="/certificate/[id]"
+              href="/certificate/demo"
               className="text-indigo-900 hover:text-indigo-600 font-medium"
             >
               Certificate
