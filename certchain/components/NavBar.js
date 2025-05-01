@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react"; // hamburger menu for smaller screens
 import { useAddress, useConnect, useDisconnect, metamaskWallet } from "@thirdweb-dev/react";
 
 export default function Navbar() {
@@ -29,7 +29,7 @@ export default function Navbar() {
             <Link href="/" className="text-indigo-900 hover:text-indigo-600 font-medium">Home</Link>
             <Link href="/issue" className="text-indigo-900 hover:text-indigo-600 font-medium">Issue</Link>
             <Link href="/verify" className="text-indigo-900 hover:text-indigo-600 font-medium">Verify</Link>
-            <Link href="/certificate/demo" className="text-indigo-900 hover:text-indigo-600 font-medium">Certificate</Link>
+            <Link href="/certificate/${cert.id}" className="text-indigo-900 hover:text-indigo-600 font-medium">Certificate</Link>
             <Link href="/profile" className="text-indigo-900 hover:text-indigo-600 font-medium">Profile</Link>
           </div>
 
@@ -70,7 +70,7 @@ export default function Navbar() {
             <Link href="/" className="text-indigo-900 font-medium">Home</Link>
             <Link href="/issue" className="text-indigo-900 font-medium">Issue</Link>
             <Link href="/verify" className="text-indigo-900 font-medium">Verify</Link>
-            <Link href="/certificate/demo" className="text-indigo-900 font-medium">Certificate</Link>
+            <Link href="/certificate/${cert.id}" className="text-indigo-900 font-medium">Certificate</Link>
             <Link href="/profile" className="text-indigo-900 font-medium">Profile</Link>
             {address ? (
               <div className="flex items-center space-x-2">

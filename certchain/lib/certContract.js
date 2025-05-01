@@ -1,3 +1,4 @@
+//contract address and abi from remix
 export const CONTRACT_ADDRESS = "0xc55e29e932c396e1f784b106861ce3382f7907b0";
 export const CONTRACT_ABI = [
   {
